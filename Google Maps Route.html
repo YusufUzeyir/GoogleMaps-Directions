@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+</head>
+
+<body onload="initMap()">
+    <h1 class="text-center">Rota</h1><br><br>
+
+    <div class="container">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Source Location" id="source">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Destination Location" id="dest">
+        </div>
+        <button onclick="hesapla()" class="btn btn-primary">Rota Hesapla</button>
+        <div id="map" style="height: 500px;width:100%;"></div>
+    </div>
+
+    <script>
+        let map, directionsService, directionsRenderer
+        let sourceAutocomplete, destAutocomplete
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 37.7749, lng: -122.4194 },
+                zoom: 13
+            });
+            google.maps.event.addListener(map, "click", function (event) {
+                this.setOptions({ scrollwheel: true });
+            });
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
+
+            sourceAutocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('source')
+            );
+            destAutocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('dest')
+            );
+        }
+
+        function hesapla() {
+            var source = document.getElementById('source').value;
+            var dest = document.getElementById('dest').value;
+
+            let request = {
+                origin: source,
+                destination: dest,
+                travelMode: 'DRIVING'
+            };
+
+            directionsService.route(request, function (result, status) {
+                if (status == "OK") {
+                    directionsRenderer.setDirections(result);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
